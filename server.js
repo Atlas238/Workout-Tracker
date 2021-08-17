@@ -36,7 +36,7 @@ app.put('/api/workouts/', async (req, res) => {
         console.log(error);
         res.status(500).json(error);
     }
-})
+});
 
 app.post('/api/workouts', async (req, res) => {
     try {
@@ -47,7 +47,7 @@ app.post('/api/workouts', async (req, res) => {
         console.log(error);
         res.status(500).json(error);
     }
-})
+});
 
 app.get('/api/workouts/range', async (req, res) => {
     try {
@@ -60,19 +60,9 @@ app.get('/api/workouts/range', async (req, res) => {
         console.log(error);
         res.status(500).json(error);
     }
-})
+});
 
 app.get('/stats', async (req, res) => {
-    try {
-        const data = await db.Workout.find({}).populate('Exercise');
-        res.status(200).sendFile('./stats.html').json(data);
-    } catch (error) {
-        console.log(error);
-        res.status(500).json(error);
-    }
-})
-
-app.get('/exercise', async (req, res) => {
     try {
         const data = await db.Workout.find({}).populate('Exercise');
         res.status(200).json(data);
@@ -80,7 +70,28 @@ app.get('/exercise', async (req, res) => {
         console.log(error);
         res.status(500).json(error);
     }
-})
+});
+
+app.get('/exercise?', async (req, res) => {
+    try {
+        ({ id } = req.query)
+        const data = await db.Workout.findById(id).populate('Exercise');
+        res.status(200).json(data);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error);
+    }
+});
+
+app.put('/exercise', async (req, res) => {
+    try {
+        const data = await db.Workout.create(req.body);
+        res.status(200).json(data);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error);
+    }
+});
 
 app.listen(PORT, () => {
     console.log(`App running on port ${PORT}!`);
