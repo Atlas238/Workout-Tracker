@@ -17,36 +17,68 @@ app.use(express.static("public"));
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { useNewUrlParser: true });
 
-app.get('/stats', (req, res) => {
+app.get('/api/workouts', async (req, res) => {
     try {
-        
-    } catch (error) {
-        console.log(error);
-        res.json(error);
-    }
-});
-
-app.get('/exercise/?', (req, res) => {
-    try {
-        db.Workout.find({}).populate('Exercise')
-        .then((data)=> {
-            res.json(data);
-        });
+        const data = await db.Workout.aggregate([{$addFields:{totalDuration:{$sum:"$exercises.duration"}}}]);
+        res.status(200).json(data);
     } catch (error) {
         console.log(error);
         res.status(500).json(error);
     }
 });
 
-app.get('/api/workouts', (req, res) => {
+app.put('/api/workouts/', async (req, res) => {
     try {
-        db.Workout.find({}).populate('Exercise')
-        .then(data => {
-            res.json(data);
-        })
+        const data = await db.Workout.create(req.body);
+        console.log(data);
+        res.status(200).json(data);
     } catch (error) {
         console.log(error);
-        res.json(error);
+        res.status(500).json(error);
+    }
+})
+
+app.post('/api/workouts', async (req, res) => {
+    try {
+        const data = await db.Workout.create(req.body);
+        console.log(data);
+        res.status(200).json(data);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error);
+    }
+})
+
+app.get('/api/workouts/range', async (req, res) => {
+    try {
+        const data = await db.Workout.aggregate([
+            {$addFields:{totalDuration:{$sum:"$exercises.duration"}}}
+        ]);
+        console.log(data);
+        res.status(200).json(data);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error);
+    }
+})
+
+app.get('/stats', async (req, res) => {
+    try {
+        const data = await db.Workout.find({}).populate('Exercise');
+        res.status(200).sendFile('./stats.html').json(data);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error);
+    }
+})
+
+app.get('/exercise', async (req, res) => {
+    try {
+        const data = await db.Workout.find({}).populate('Exercise');
+        res.status(200).json(data);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error);
     }
 })
 
