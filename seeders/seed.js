@@ -19,6 +19,14 @@ const workoutSeed = [
         reps: 10,
         sets: 4,
       },
+      {
+        type: 'resistance',
+        name: 'Bicep Curl',
+        duration: 15,
+        weight: 100,
+        reps: 10,
+        sets: 4,
+      },
     ],
   },
   {
